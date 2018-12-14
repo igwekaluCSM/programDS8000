@@ -1,0 +1,31 @@
+-- VERSION_5
+-- START DISKCACHE_2
+C:\QtPro_Workspace\.metadata\.plugins\org.eclipse.core.resources\.projects\proj_DS8000\com.python.pydev.analysis\v2_indexcache
+dsProgram|1544817477080266000|C:\QtPro_Workspace\proj_DS8000\src\dsProgram.py
+-- END DISKCACHE
+-- START DICTIONARY
+6
+3=NetworkAdapter
+1=C:\QtPro_Workspace\proj_DS8000\src\dsProgram.py
+4=GUIMainWindow
+6=NetworkAdapter.__init__
+2=dsProgram
+5=GUIMainWindow.__init__
+-- END DICTIONARY
+-- START TREE 1
+3
+gui|1|GUIMainWindow!1^15#7*17@
+mai|1|main!1^37#5*18@
+net|1|NetworkAdapter!1^6#7*17@
+-- END TREE
+-- START TREE 2
+8
+__i|2|__init__!3&1^7#9*18@__init__!4&1^19#13*18@
+app|1|app!5&1^23#13*19@
+cfg|0|
+ena|1|enableConfig!4&1^29#13*18@
+net|2|networkAdapt!5&1^27#13*19@netAdapt!6&1^8#9*19@
+sel|0|
+set|1|setNetAdapter!3&1^10#9*18@
+sta|1|startIPV4!4&1^33#13*18@
+-- END TREE

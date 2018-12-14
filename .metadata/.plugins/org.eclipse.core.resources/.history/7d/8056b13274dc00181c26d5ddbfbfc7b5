@@ -1,0 +1,481 @@
+
+import sys
+import os
+from PyQt5  import QtCore, QtGui, uic, QtWidgets
+
+import serial
+import threading
+from serial.serialutil import SerialException
+from serial.tools import list_ports
+import time
+from PyQt5.QtGui import QPalette
+import time
+from multiprocessing import Process,  Queue, Pipe, Manager
+
+import re
+
+class RS232Comm:
+    
+    def __init__(self,port=None,baudrate = 9600):
+        
+        try:
+            self.port = port
+            self.boadrate = baudrate
+            self.rs232 = serial.Serial()
+            
+            # Open port only if there is a port defined
+            if self.port:
+                
+                
+                
+                # Configure the serial port
+                self.rs232.port = self.port
+                self.rs232.baudrate = self.boadrate
+                #self.rs232.rtscts = True
+                #self.rs232.dsrdtr = True
+                self.rs232.timeout = 60 # one second timeout
+                
+                self.rs232.open()
+                self.rs232.close()
+                self.rs232.open()
+            
+            
+        except SerialException as e:
+            self.rs232.close()
+            print("Failed to connect to serial port:\n%s" % e)
+            
+    def Open(self, port=None,baudrate = 9600):
+        try:
+            self.boadrate = baudrate
+            self.port = port
+            if self.port and self.boadrate:
+                # Configure the serial port
+                self.rs232.port = self.port
+                self.rs232.baudrate = self.boadrate
+                #self.rs232.rtscts = True
+                #self.rs232.dsrdtr = True
+                self.rs232.timeout = 60 # one second timeout
+                
+                self.rs232.open()
+                self.rs232.close()
+                self.rs232.open()
+                return True
+            else:
+                print("Error: No Port or Boadrate defined [%s:%s]" % (self.port, self.boadrate))
+                return False
+            
+        except SerialException as e:
+            self.rs232.close()
+            print("Error: Failed to connect to serial port:\n%s" % e)
+            return False
+        
+    def Close(self):
+        self.rs232.close()
+        
+    def ListPorts(self):
+        commPorts = list_ports.comports()
+        return commPorts
+        
+    def ReadData(self):
+        data = self.rs232.readline().decode('ascii')
+        return data
+        
+    def WriteData(self, data):
+        self.rs232.write(data)
+
+#
+# 0    00 61 19
+#-80   00 00 00 3a
+#
+#
+#
+class RampCtrl(RS232Comm):
+    direction = b'D' # U       
+    lowVolume =  -25
+    highVolume =  0
+    volumeStep = 1   # 1 produces a 1/2 db increment and 2 produces a full db incerment, a 3 produces 1.5 and a 4 2.0 etc...
+    delay = 500 #* 3   # * 3 # *2 sec. *3 *5Delay in msec for how long between steps
+    lastDelay = 5000 # How long to keep the emitter off
+    
+    
+    #timeEmitterOff =  
+    
+    def __init__(self, gui, port=None):
+        RS232Comm.__init__(self,port)
+        self.gui = gui
+    def UpdateRampValues(self):
+        
+        #delay = 
+        
+        self.WriteData(b'V %d %d %d %d %d %c' % (self.lowVolume, self.highVolume, self.volumeStep, self.delay, self.lastDelay, self.direction))
+        time.sleep(1) # sleep for one second
+        
+    def StartRampingNow(self):
+        repeat = 10
+        self.WriteData(b'S %d\n' % repeat)
+    
+    def MonitorRampping(self):
+        while True:
+        
+            result = self.ReadData()
+            if result:
+                # Volume Changed to: db 6        <-- Sample data
+                volChanged = re.match( r'(Volume Changed to: db)\s*(\d*)', result)
+                if volChanged:
+                    currentVolume = int(volChanged.group(2))
+                    self.gui.lcdControl.updateVolume(currentVolume)
+                
+                    
+                    print("%s" % result)
+                
+class findSerial:
+        def __init__ (self,serialSearch):
+            self.serialSearch = serialSearch
+            
+        def locatePorts(self):
+            pass             
+                
+class DisplayControl:
+    def __init__(self, gui):
+        self.gui = gui 
+    
+    def Off(self):
+        self.gui.cycleControlFrame.setEnabled(False)
+        self.gui.volumeControlFrame.setEnabled(False)
+        self.gui.startButton.setEnabled(False)
+        # Until a cancel can be added set this too to disable
+        self.gui.cancelButton.setEnabled(False)
+        
+    def On(self):
+        self.gui.cycleControlFrame.setEnabled(True)
+        self.gui.volumeControlFrame.setEnabled(True)
+        self.gui.startButton.setEnabled(True)
+        self.gui.cancelButton.setEnabled(False)
+        self.gui.volumeStepText.setEnabled(False)
+
+class LCDControl:
+    def __init__(self,LCD):
+        self.LCD = LCD 
+        self.timeLeft = 0
+        
+    # Current Volume
+    def updateVolume(self, volume):
+        self.LCD.currentVolLCD.display(volume)
+        self.LCD.app.processEvents()
+    
+    # Time Remaining
+    def timeUpdate(self, value = None):
+        
+        if value:
+            self.LCD.timeLCD.display(value)
+        else:
+            self.timeLeft = self.timeLeft - 1000 #  remove one second
+            self.LCD.timeLCD.display(self.timeLeft) # self.rampTimer.remainingTime())
+        self.LCD.app.processEvents()
+        # self.LCD.timeLCD.show()
+            
+    def timeStart(self):
+ 
+    
+        self.rampTimer = QtCore.QTimer()
+        self.timeLeft = self.LCD.timeCalc
+        self.rampTimer.timeout.connect(self.timeUpdate) 
+        #self.rampTimer.start(self.timeCalc)
+        self.rampTimer.setInterval(1000)
+        self.rampTimer.start()
+     
+    
+         
+
+            
+    
+    def cycleStart(self):
+        self.LCD.cycleLCD.display(1.0)
+        self.LCD.cycleLCD.show()
+                
+class GUIMainWindow(QtWidgets.QMainWindow):
+        def __init__(self,app):
+            super(GUIMainWindow,self).__init__()
+            
+            self.app = app
+            #super(QtWidgets.QMainWindow, self).__init__()
+            uic.loadUi(os.getcwd() + '\AudioPrototype.ui', self)
+            self.setWindowTitle("Audio Ramp Control")
+            self.serialPortActive = False
+            
+            self.HIGHMAX = -25
+            self.LOWMIN  = 0
+            
+            self.highVolume = 0
+            self.lowVolume = -25
+            self.repeatValue = 0 
+            self.volumeStepValue = 0
+            self.timeOffValue = 0
+            self.timeBetweenValue = 0
+            self.a = 0
+            self.b = 0
+            self.c = 0
+            self.d = 0
+            
+            self.timeCalc = 0
+
+            self.commPortList = []
+            
+            self.volumeStepValue = 1 # default to one (stops divide by zero)
+            self.repeatValue     = 1 # default to one (User will get one iteration)
+             
+            self.timeLCD.setStyleSheet("""QLCDNumber { 
+                                                    background-color: green; 
+                                                    color: green; }""")
+                        
+            self.dispControl = DisplayControl(self)
+            self.lcdControl = LCDControl(self)
+            
+            self.rampCtrl = RampCtrl(self)
+            
+            # Add all known Serial Ports to the Serial Port ComboBox
+            # NOTE: This has to come after RampCtrl is created!   
+            self.SerialPortBox.addItem("Select")
+            
+            for comPortInfo in self.rampCtrl.ListPorts():
+                value = comPortInfo.device
+                self.SerialPortBox.addItem(value)
+                self.commPortList.append(value)
+            
+        def serialPortChanged(self,name):
+            if name == "Select":
+                pass
+            else:
+                index = self.SerialPortBox.findText("Select")
+                self.SerialPortBox.removeItem(index)
+                
+                self.serialPortName = name
+                
+                # Open Communcations
+                if not self.rampCtrl.Open(self.serialPortName):
+                    # Comm port failed to open
+                    self.statusbar.showMessage("ERROR: Serial Port: %s not openned" % self.serialPortName)
+                    self.serialPortActive = False
+                else:
+                    self.statusbar.showMessage("Serial Port: %s is openned" % self.serialPortName )
+                    self.serialPortActive = True
+                            
+        def RepresentsInt(self, strValue):
+            try: 
+                int(strValue)
+                return True
+            except ValueError:
+                return False
+            
+        def InRange(self,value,slider):
+            rangeTypes = {"volume":1,"repeatOff":2,"timeBetween":3,"step":4}
+            rangeVal = rangeTypes[slider]
+            
+            if ((rangeVal == 1) and (value >= self.HIGHMAX and value <= self.LOWMIN)):
+                return True
+            elif ((rangeVal == 2) and (value >= 0 and value <= 99)):
+                return True
+            elif ((rangeVal == 3) and (value >= 0 and value <= 60)):
+                return True
+            elif ((rangeVal == 4) and (value >= 0 and value <=3)):
+                return True                    
+            else:
+                return False 
+  
+        # Volume Control:
+        
+        ## Low Volume
+        def LowVolumeMoving(self,value):
+           
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.lowVolume = value            
+            self.LowVolumeEdit.setText(str(value ))
+        
+        def LowVolumeEdited(self, text):
+            
+            if self.RepresentsInt(text):
+                value = int(text)
+                self.lowVolume = value
+                if self.InRange(value,"volume"):
+                    self.LowVolumeSlider.setValue(value)
+                else:
+                    self.LowVolumeEdit.setText('Out of Range')
+        
+        ## High Volume
+        def HighVolumeMoving(self,value):
+        
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.highVolume = value
+            
+            self.HighVolumeEdit.setText(str(value ))
+           
+        def HighVolumeEdited(self, text):
+            if self.RepresentsInt(text):
+                value = int(text)
+                self.highVolume = value
+                if self.InRange(value,"volume"):
+                    self.HighVolumeSlider.setValue(value)
+                else:
+                    self.HighVolumeEdit.setText('Out of Range')
+            
+        ##Repeat duration
+        def repeatValueMoving(self,value):    
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.repeatValue = value
+            
+            self.repeatText.setText(str(value ))
+            
+        def repeatValueEdited(self, text):
+            if self.RepresentsInt(text):
+                value = int(text)
+                self.repeatValue = value
+                if self.InRange(value,"repeatOff"):
+                    self.repeatSlider.setValue(value)
+                else:
+                    self.repeatText.setText('Out of Range')
+                        
+        ##Total duration
+        def totalDurationSet(self):    
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.timeCalc = 0
+            volumeDifference = abs(int(self.highVolume) - int(self.lowVolume))
+            
+            
+            volumeStep = self.volumeStepValue
+            if volumeStep == 1:
+                volumeStep = 2
+            elif volumeStep == 2:
+                volumeStep = 1
+            elif volumeStep == 3:
+                volumeStep = .75
+            else:
+                volumeStep = .5
+                    
+            stepDuration = 500
+            #self.rampControl.delay
+            rampUpDown = 2
+            emitterOff = self.timeOffValue
+            plateau = self.timeBetweenValue
+            cycleRepeat = self.repeatValue
+            
+            volumeRate = volumeDifference*volumeStep
+            
+            a = volumeRate * stepDuration
+            b = a * rampUpDown
+            c = emitterOff + plateau
+            d = b + c
+            self.timeCalc = d * cycleRepeat
+            
+            
+
+            self.lcdControl.timeUpdate(self.timeCalc)
+
+        ##Total duration
+        def volumeStepValueMoving(self,value):    
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.volumeStepValue = value
+            editBoxValue= value/2 #displaying dB value
+            self.volumeStepText.setText(str(editBoxValue ))
+            
+
+        ##Time off
+        def timeOffValueMoving(self,value):    
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.timeOffValue = value
+            
+            self.timeOffText.setText(str(value ))
+            
+        def timeOffEdited(self, text):
+            if self.RepresentsInt(text):
+                value = int(text)
+                self.timeOffValue = value
+                if self.InRange(value,"repeatOff"):
+                    self.timeOffSlider.setValue(value)
+                else:
+                    self.timeOffText.setText('Out of Range')
+        
+         
+        ##Time between
+        def timeBetweenValueMoving(self,value):    
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.timeBetweenValue = value
+            
+            self.timeBetweenText.setText(str(value ))
+            
+        def timeBetweenEdited(self, text):
+            if self.RepresentsInt(text):
+                value = int(text)
+                self.timeBetweenValue = value
+                if self.InRange(value,"timeBetween"):
+                    self.timeBetweenSlider.setValue(value)
+                else:
+                    self.timeBetweenText.setText('Out of Range')        
+                    
+        #Start Button
+        def startClicked(self):
+            if self.serialPortActive:
+                self.dispControl.Off()
+                self.totalDurationSet()
+                self.lcdControl.timeStart()
+                self.lcdControl.cycleStart()
+                                
+                self.rampCtrl.StartRampingNow()
+                
+                self.rampCtrl.MonitorRampping()
+                
+#                 x = self.rampCtrl
+# 
+#                 parent,child = Pipe()
+#                 
+#                 processRamp = Process(target=rampMonitoringProcess, args=(child,x))
+#                 processRamp.start()
+#                 print(parent.recv())
+#                 processRamp.join()
+                
+               
+            else:
+                self.statusbar.showMessage("Please select a serial port...")
+    
+            
+        def cancelClicked(self):
+            self.dispControl.On()
+            
+
+# def rampMonitoringProcess(child, x):
+#     child.send("Cool") 
+#     x.gui.MonitorRampping()
+            
+def main():
+    try:
+        app = QtWidgets.QApplication(sys.argv)
+        window = GUIMainWindow(app)
+        window.show()
+        sys.exit(app.exec())
+    except Exception as e:
+        import os
+        print("GUI Crashed: %s\n" % e)
+    
+    return 
+ 
+    rampCtrl = RampCtrl('com12') #  RampCtrl('com12') # Lab 12 office 10
+    
+    rampCtrl.UpdateRampValues()
+    
+    rampCtrl.StartRampingNow()
+    
+    rampCtrl.MonitorRamping()
+    
+# end of class MyApp
+
+if __name__ == "__main__":
+    
+ 
+ 
+    main()

@@ -1,0 +1,357 @@
+
+import sys
+import os
+from PyQt5  import QtCore, QtGui, uic, QtWidgets
+
+import serial
+import threading
+from serial.serialutil import SerialException
+import time
+from PyQt5.QtGui import QPalette
+
+
+class RS232Comm:
+    
+    def __init__(self,port='com10',baudrate = 9600):
+        
+        try:
+            self.rs232 = serial.Serial()
+            
+            # Configure the serial port
+            self.rs232.port = port
+            self.rs232.baudrate = baudrate
+            #self.rs232.rtscts = True
+            #self.rs232.dsrdtr = True
+            self.rs232.timeout = 60 # one second timeout
+            
+            self.rs232.open()
+            self.rs232.close()
+            self.rs232.open()
+            
+            
+        except SerialException as e:
+            self.rs232.close()
+            print("Failed to connect to serial port:\n%s" % e)
+    
+    def Close(self):
+        self.rs232.close()
+    
+    def ReadData(self):
+        data = self.rs232.readline().decode('ascii')
+        print("%s" % data)
+        
+    def WriteData(self, data):
+        self.rs232.write(data)
+
+#
+# 0    00 61 19
+#-80   00 00 00 3a
+#
+#
+#
+class RampCtrl(RS232Comm):
+    direction = b'D' # U       
+    lowVolume =  -25
+    highVolume =  0
+    volumeStep = 1   # 1 produces a 1/2 db increment and 2 produces a full db incerment, a 3 produces 1.5 and a 4 2.0 etc...
+    delay = 500 #* 3   # * 3 # *2 sec. *3 *5Delay in msec for how long between steps
+    lastDelay = 5000 # How long to keep the emitter off
+    
+    
+    #timeEmitterOff =  
+    
+    def __init__(self, port):
+        RS232Comm.__init__(self,port)
+    
+    def UpdateRampValues(self):
+        
+        #delay = 
+        
+        self.WriteData(b'V %d %d %d %d %d %c' % (self.lowVolume, self.highVolume, self.volumeStep, self.delay, self.lastDelay, self.direction))
+        time.sleep(1) # sleep for one second
+        
+    def StartRampingNow(self):
+        repeat = 10
+        self.WriteData(b'S %d\n' % repeat)
+    
+    def MonitorRampping(self):
+        while True:
+        
+            result = self.ReadData()
+            if result:
+                print("%s" % result)
+                
+class findSerial:
+        def __init__ (self,serialSearch):
+            self.serialSearch = serialSearch
+            
+        def locatePorts(self):
+            pass             
+                
+class DisplayControl:
+    def __init__(self, gui):
+        self.gui = gui 
+    
+    def Off(self):
+        self.gui.cycleControlFrame.setEnabled(False)
+        self.gui.volumeControlFrame.setEnabled(False)
+        self.gui.startButton.setEnabled(False)
+        self.gui.cancelButton.setEnabled(True)
+        
+    def On(self):
+        self.gui.cycleControlFrame.setEnabled(True)
+        self.gui.volumeControlFrame.setEnabled(True)
+        self.gui.startButton.setEnabled(True)
+        self.gui.cancelButton.setEnabled(False)
+        self.gui.volumeStepText.setEnabled(False)
+class LCDControl:
+    def __init__(self,LCD):
+        self.LCD = LCD 
+        
+        
+    def timeStart(self):
+        rampTimer = QtCore.QTimer()
+        #rampTimer.start(self.timeCalc)
+        rampTimer.start(10000)
+         
+        while rampTimer.isActive():
+            #self.LCD.timeLCD.display(10000)
+            self.LCD.timeLCD.display(rampTimer.remainingTime())
+            self.LCD.timeLCD.show()
+            
+    
+    def cycleStart(self):
+        self.LCD.cycleLCD.display(1.0)
+        self.LCD.cycleLCD.show()
+                
+class GUIMainWindow(QtWidgets.QMainWindow):
+        def __init__(self):
+            super(GUIMainWindow,self).__init__()
+            #super(QtWidgets.QMainWindow, self).__init__()
+            uic.loadUi(os.getcwd() + '\AudioPrototype.ui', self)
+            self.setWindowTitle("Audio Ramp Control")
+            
+            
+            self.HIGHMAX = -25
+            self.LOWMIN  = 0
+            
+            self.highVolume = 0
+            self.lowVolume = -25
+            self.repeatValue = 0 
+            self.volumeStepValue = 0
+            self.timeOffValue = 0
+            self.timeBetweenValue = 0
+            self.a = 0
+            self.b = 0
+            self.c = 0
+            self.d = 0
+            self.timeCalc = 0
+
+            
+            self.volumeStepValue = 1 # default to one (stops divide by zero)
+            self.repeatValue     = 1 # default to one (User will get one iteration)
+             
+            self.timeLCD.setStyleSheet("""QLCDNumber { 
+                                                    background-color: green; 
+                                                    color: green; }""")
+                        
+            self.dispControl = DisplayControl(self)
+            self.lcdControl = LCDControl(self)
+            #self.rampControl = RampCtrl()
+            
+        def RepresentsInt(self, strValue):
+            try: 
+                int(strValue)
+                return True
+            except ValueError:
+                return False
+            
+        def InRange(self,value,slider):
+            rangeTypes = {"volume":1,"repeatOff":2,"timeBetween":3,"step":4}
+            rangeVal = rangeTypes[slider]
+            
+            if ((rangeVal == 1) and (value >= self.HIGHMAX and value <= self.LOWMIN)):
+                return True
+            elif ((rangeVal == 2) and (value >= 0 and value <= 99)):
+                return True
+            elif ((rangeVal == 3) and (value >= 0 and value <= 60)):
+                return True
+            elif ((rangeVal == 4) and (value >= 0 and value <=3)):
+                return True                    
+            else:
+                return False 
+  
+        # Volume Control:
+        
+        ## Low Volume
+        def LowVolumeMoving(self,value):
+           
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.lowVolume = value            
+            self.LowVolumeEdit.setText(str(value ))
+        
+        def LowVolumeEdited(self, text):
+            
+            if self.RepresentsInt(text):
+                value = int(text)
+                self.lowVolume = value
+                if self.InRange(value,"volume"):
+                    self.LowVolumeSlider.setValue(value)
+                else:
+                    self.LowVolumeEdit.setText('Out of Range')
+        
+        ## High Volume
+        def HighVolumeMoving(self,value):
+        
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.highVolume = value
+            
+            self.HighVolumeEdit.setText(str(value ))
+           
+        def HighVolumeEdited(self, text):
+            if self.RepresentsInt(text):
+                value = int(text)
+                self.highVolume = value
+                if self.InRange(value,"volume"):
+                    self.HighVolumeSlider.setValue(value)
+                else:
+                    self.HighVolumeEdit.setText('Out of Range')
+            
+        ##Repeat duration
+        def repeatValueMoving(self,value):    
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.repeatValue = value
+            
+            self.repeatText.setText(str(value ))
+            
+        def repeatValueEdited(self, text):
+            if self.RepresentsInt(text):
+                value = int(text)
+                self.repeatValue = value
+                if self.InRange(value,"repeatOff"):
+                    self.repeatSlider.setValue(value)
+                else:
+                    self.repeatText.setText('Out of Range')
+                        
+        ##Total duration
+        def totalDurationSet(self):    
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            
+            volumeDifference = abs(int(self.highVolume) - int(self.lowVolume))
+            
+            
+            volumeStep = self.volumeStepValue
+            if volumeStep == 1:
+                volumeStep = 2
+            elif volumeStep == 2:
+                volumeStep = 1
+            elif volumeStep == 3:
+                volumeStep = .75
+            else:
+                volumeStep = .5
+                    
+            stepDuration = 500
+            #self.rampControl.delay
+            rampUpDown = 2
+            emitterOff = self.timeOffValue
+            plateau = self.timeBetweenValue
+            cycleRepeat = self.repeatValue
+            
+            volumeRate = volumeDifference*volumeStep
+            
+            a = volumeRate * stepDuration
+            b = a * rampUpDown
+            c = emitterOff + plateau
+            d = b + c
+            timeCalc = d * cycleRepeat
+            
+            
+            self.timeLCD.display(timeCalc)
+
+        ##Total duration
+        def volumeStepValueMoving(self,value):    
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.volumeStepValue = value
+            editBoxValue= value/2 #displaying dB value
+            self.volumeStepText.setText(str(editBoxValue ))
+            
+
+        ##Time off
+        def timeOffValueMoving(self,value):    
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.timeOffValue = value
+            
+            self.timeOffText.setText(str(value ))
+            
+        def timeOffEdited(self, text):
+            if self.RepresentsInt(text):
+                value = int(text)
+                self.timeOffValue = value
+                if self.InRange(value,"repeatOff"):
+                    self.timeOffSlider.setValue(value)
+                else:
+                    self.timeOffText.setText('Out of Range')
+        
+         
+        ##Time between
+        def timeBetweenValueMoving(self,value):    
+            # do not use the same value in setting another widget that is being
+            # used to set the current one. See example bellow
+            self.timeBetweenValue = value
+            
+            self.timeBetweenText.setText(str(value ))
+            
+        def timeBetweenEdited(self, text):
+            if self.RepresentsInt(text):
+                value = int(text)
+                self.timeBetweenValue = value
+                if self.InRange(value,"timeBetween"):
+                    self.timeBetweenSlider.setValue(value)
+                else:
+                    self.timeBetweenText.setText('Out of Range')        
+                    
+        #Start Button
+        def startClicked(self):
+            self.dispControl.Off()
+            self.totalDurationSet()
+            self.lcdControl.timeStart()
+            self.lcdControl.cycleStart()
+            #self.rampControl.StartRampingNow()
+
+            
+        def cancelClicked(self):
+            self.dispControl.On()
+            
+def main():
+    try:
+        app = QtWidgets.QApplication(sys.argv)
+        window = GUIMainWindow()
+        window.show()
+        sys.exit(app.exec())
+    except Exception as e:
+        import os
+        print("GUI Crashed: %s\n" % e)
+    
+    return 
+ 
+    rampCtrl = RampCtrl('com12') #  RampCtrl('com12') # Lab 12 office 10
+    
+    rampCtrl.UpdateRampValues()
+    
+    rampCtrl.StartRampingNow()
+    
+    rampCtrl.MonitorRamping()
+    
+# end of class MyApp
+
+if __name__ == "__main__":
+    
+ 
+ 
+    main()

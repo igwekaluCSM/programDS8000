@@ -1,0 +1,21 @@
+An interface with this name is not registered with the router.
+
+netName:  
+An interface with this name is not registered with the router.
+
+netName:  
+An interface with this name is not registered with the router.
+
+netName:  
+netName1: \"Local Area Connection\" 
+
+\"Local Area Connection\" 
+netName1: \"Local Area Connection\" 
+
+\"Local Area Connection\" 
+netName1: 
+netName1: 
+netName1: 
+netName1: 
+netName1: 
+netName1: 

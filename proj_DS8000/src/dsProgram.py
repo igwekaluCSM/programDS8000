@@ -1,59 +1,37 @@
 import sys
 import os
-import time
+import time 
 from PyQt5  import QtCore, QtGui, uic, QtWidgets
 from asyncio.tasks import wait
 
+currDir  = os.getcwd()
             
 class NetworkAdapter:
     def __init__(self, netAdapt):
         self.netAdapt = netAdapt 
-    
-    def setNetAdapter(self):
-        try:
-            #os.system(".\netSet.cmd")
-            currDir  = os.getcwd()
-            os.system(currDir + "\\netSet.cmd")
-            '''
-            os.system("FOR /F \"tokens=4\" %G IN ('netsh int show int ^|find \"Local\"') DO SET netName=%G")
-            os.system("FOR /F \"tokens=4\" %G IN ('netsh int show int ^|find \"Ethernet\"') DO echo Result is [%G]")
-            #os.system("SET netName=%G%")
-            os.system("ECHO %G")
-            os.system("netsh int set int ECHO %netName% enable")
-            #os.system("netsh int set int \"Ethernet\" enable")
-            '''
-        except:
-            print("Already Enabled")
-        '''
-        try:   
-            os.system("netsh int dump > currentNetConfig.dat")
-            time.sleep(1)
-        except:
-            print("Config File already created")
         
-        try:
-            os.system("ipconfig /release")
-            time.sleep(1)
-        except:
-            print("release failed")
-            
-        try:
-            os.system("netsh int ip set address 13 static 192.168.100.2 255.255.255.0")
-            os.system("netsh int ip add address 13 192.168.101.2 255.255.255.0")
-        except:
-            print("set adresses failed")
-        '''    
+    def setNetAdapter(self):
+        
+        #os.system(".\netSet.cmd")
+        
+        os.system( currDir + "\\netSet.cmd >>netsetOutput.txt")
+        #os.system( currDir + "\\ipSet.cmd >> ipsetOutput.txt")
+        
+        '''
+        os.system("FOR /F \"tokens=4\" %G IN ('netsh int show int ^|find \"Local\"') DO SET netName=%G")
+        os.system("FOR /F \"tokens=4\" %G IN ('netsh int show int ^|find \"Ethernet\"') DO echo Result is [%G]")
+        #os.system("SET netName=%G%")
+        os.system("ECHO %G")
+        os.system("netsh int set int ECHO %netName% enable")
+        #os.system("netsh int set int \"Ethernet\" enable")
+        '''
+        #except:
+        #   print("Already Enabled")
+ 
     def resetNetAdapter(self):
     
         #os.system("netsh int ip set address 13 dhcp")
-        try:
-            os.system("netsh exec currentNetConfig.dat")
-        except:
-            print("resetting network settings failed")
-        try:    
-            os.system("ipconfig /renew")
-        except:
-            print("renew failed")
+        os.system( currDir + "\\ipReset.cmd >> resetOutput.txt")
         
 class GUIMainWindow(QtWidgets.QMainWindow):
     
@@ -61,7 +39,7 @@ class GUIMainWindow(QtWidgets.QMainWindow):
     
         def __init__(self,app):
             super(GUIMainWindow,self).__init__()
-            
+            self.gui = self
             
             self.app = app
             uic.loadUi(os.getcwd() + '\DS8000.ui', self)
@@ -75,10 +53,19 @@ class GUIMainWindow(QtWidgets.QMainWindow):
             
         def startConfig(self):
             self.networkAdapt.setNetAdapter()
-        
+            #self.fillOutput()
         def resetConfig(self):
             self.networkAdapt.resetNetAdapter()
             
+        
+        def fillOutput(self):
+            outputFile = open(currDir + "\\ipsetOutput.txt")
+            setLines = outputFile.readlines()
+            outputFile.close()
+            for line in setLines:
+                self.consoleOutput.setText(line)
+        
+        
    
 def main():
     try:

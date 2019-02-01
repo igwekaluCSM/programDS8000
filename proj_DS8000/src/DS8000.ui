@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>592</height>
+    <width>591</width>
+    <height>381</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <widget class="QPushButton" name="startButton">
     <property name="geometry">
      <rect>
-      <x>680</x>
+      <x>480</x>
       <y>20</y>
       <width>93</width>
       <height>28</height>
@@ -33,10 +33,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>670</x>
+      <x>470</x>
       <y>60</y>
       <width>111</width>
-      <height>311</height>
+      <height>111</height>
      </rect>
     </property>
     <property name="title">
@@ -69,13 +69,33 @@
      </property>
     </widget>
    </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>300</y>
+      <width>421</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>421</width>
+      <height>261</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>591</width>
      <height>26</height>
     </rect>
    </property>
@@ -91,8 +111,8 @@
    <slot>enableConfig()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>708</x>
-     <y>65</y>
+     <x>508</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>490</x>
@@ -107,12 +127,12 @@
    <slot>startConfig()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>740</x>
-     <y>126</y>
+     <x>540</x>
+     <y>143</y>
     </hint>
     <hint type="destinationlabel">
-     <x>591</x>
-     <y>481</y>
+     <x>590</x>
+     <y>380</y>
     </hint>
    </hints>
   </connection>
@@ -123,12 +143,12 @@
    <slot>resetConfig()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>700</x>
-     <y>177</y>
+     <x>500</x>
+     <y>183</y>
     </hint>
     <hint type="destinationlabel">
      <x>309</x>
-     <y>446</y>
+     <y>380</y>
     </hint>
    </hints>
   </connection>
@@ -137,5 +157,6 @@
   <slot>enableConfig()</slot>
   <slot>startConfig()</slot>
   <slot>resetConfig()</slot>
+  <slot>fillOutput()</slot>
  </slots>
 </ui>

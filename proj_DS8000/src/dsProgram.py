@@ -5,7 +5,13 @@ from PyQt5  import QtCore, QtGui, uic, QtWidgets
 from asyncio.tasks import wait
 
 currDir  = os.getcwd()
-            
+
+for bplText in open(currDir + '\\BPL.xml', 'r'):
+    if "insert_directory_here" in bplText:
+        bplText=bplText.replace("insert_directory_here" , currDir + '/BPL.xsd')
+        bplText=bplText.replace('\\','/')
+        print(bplText)
+
 class NetworkAdapter:
     def __init__(self, netAdapt):
         self.netAdapt = netAdapt 
@@ -14,8 +20,8 @@ class NetworkAdapter:
         
         #os.system(".\netSet.cmd")
         
-        os.system( currDir + "\\netSet.cmd >>netsetOutput.txt")
-        #os.system( currDir + "\\ipSet.cmd >> ipsetOutput.txt")
+        #os.system( currDir + "\\netSet.cmd >>netsetOutput.txt")
+        os.system( currDir + "\\ipSet.cmd >> ipsetOutput.txt")
         
         '''
         os.system("FOR /F \"tokens=4\" %G IN ('netsh int show int ^|find \"Local\"') DO SET netName=%G")
@@ -42,7 +48,7 @@ class GUIMainWindow(QtWidgets.QMainWindow):
             self.gui = self
             
             self.app = app
-            uic.loadUi(os.getcwd() + '\DS8000.ui', self)
+            uic.loadUi(currDir + '\DS8000.ui', self)
             self.setWindowTitle("DS8000 Programming")
             
             self.networkAdapt = NetworkAdapter(self)

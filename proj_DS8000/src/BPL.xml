@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpl-document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://www.bradycorp.com/printers/bpl"
+xmlns:bpl="http://www.bradycorp.com/printers/bpl"
+xsi:schemaLocation="http://www.bradycorp.com/printers/bpl insert_directory_here">
+
+	<defaults>
+		<document units="mm"/>
+		<default-label width ="76.2" height="50.8" font-name="Arial" font-size="20" align="center" bold="true"/>
+		<printer match-media="Y3608006" match-ribbon="Y36225" tear-or-cut="after-job" heat="4" speed="50"/>
+	</defaults>
+	
+	<labels>
+		<label>
+			<text/>
+				<text-sizing>
+					
+				</text-sizing>
+				<datasource>
+					<static-text value=""/>
+				</datasource>
+			</text>
+		</label>
+	</labels>
+
+</bpl-document>
+

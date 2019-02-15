@@ -4,15 +4,18 @@
 
 @ECHO OFF
 FOR /F "tokens=4*" %%N IN ('netsh int show int^| findstr "Local Ethernet"') DO (  
-	IF %ERRORLEVEL% EQU 1 (
-		SET netName=\"%%N %%O\"
+	ECHO here: %~2
+	IF %ERRORLEVEL% EQU 0 (
+		SET netName= \"%%N %%O\"
 		ECHO netName1: %netName%
-		netsh int set int %netName% admin=ENABLED
+		TIMEOUT 1
+		netsh int set int %netName% admin=ENABLED >> "ipNetSet.txt"
 		) ELSE (
 			FOR /F "tokens=1,5*" %%P IN ('netsh int ipv4 show int ^| findstr "Local Ethernet"') DO (
 				SET idName=%%P
 				ECHO idName: %idName%
 				netsh int set int %idName% admin=ENABLED
+				TIMEOUT 1
 				)
 		)
 	)

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>DS8000 Programming</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="startButton">
@@ -29,20 +29,23 @@
    </widget>
    <widget class="QGroupBox" name="configBox">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
       <x>470</x>
       <y>60</y>
       <width>111</width>
-      <height>111</height>
+      <height>141</height>
      </rect>
     </property>
     <property name="title">
      <string>Configuration</string>
     </property>
     <widget class="QPushButton" name="setIPAdaptButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -55,10 +58,13 @@
       <string>Set IPv4</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="reseNetAdaptButton">
+    <widget class="QPushButton" name="resetNetAdaptButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>11</x>
        <y>70</y>
        <width>93</width>
        <height>28</height>
@@ -66,6 +72,22 @@
      </property>
      <property name="text">
       <string>Reset IPv4</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="skipNetButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Skip Config</string>
      </property>
     </widget>
    </widget>
@@ -79,7 +101,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit">
+   <widget class="QTextEdit" name="consoleOutput">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -88,6 +110,57 @@
       <height>261</height>
      </rect>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="excelBox">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>220</y>
+      <width>111</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Excel Sheet</string>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+    <widget class="QPushButton" name="newExcelButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Create New</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="uploadExcelButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Upload</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -137,7 +210,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>reseNetAdaptButton</sender>
+   <sender>resetNetAdaptButton</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>resetConfig()</slot>
@@ -152,11 +225,78 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>skipNetButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>skipConfig()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>491</x>
+     <y>204</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>456</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>consoleOutput</sender>
+   <signal>textChanged()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>fillOutput()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>366</x>
+     <y>58</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>465</x>
+     <y>50</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>newExcelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>newExcel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>480</x>
+     <y>294</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>452</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uploadExcelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>openUpload()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>481</x>
+     <y>330</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>457</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>enableConfig()</slot>
   <slot>startConfig()</slot>
   <slot>resetConfig()</slot>
   <slot>fillOutput()</slot>
+  <slot>skipConfig()</slot>
+  <slot>newExcel()</slot>
+  <slot>openUpload()</slot>
  </slots>
 </ui>

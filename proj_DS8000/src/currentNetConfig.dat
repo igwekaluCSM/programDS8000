@@ -29,7 +29,8 @@ pushd interface ipv4
 
 reset
 set global icmpredirects=enabled
-set interface interface="Local Area Connection 2" forwarding=disabled advertise=disabled metric=1 siteprefixlength=0 nud=disabled routerdiscovery=disabled managedaddress=disabled otherstateful=disabled weakhostsend=disabled weakhostreceive=disabled ignoredefaultroutes=disabled advertisedrouterlifetime=0 advertisedefaultroute=disabled currenthoplimit=0 forcearpndwolpattern=disabled enabledirectedmacwolpattern=disabled
+add address name="Local Area Connection" address=192.168.100.2 mask=255.255.255.0
+add address name="Local Area Connection" address=192.168.101.2 mask=255.255.255.0
 
 
 popd

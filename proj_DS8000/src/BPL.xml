@@ -12,12 +12,9 @@ xsi:schemaLocation="http://www.bradycorp.com/printers/bpl insert_directory_here"
 	
 	<labels>
 		<label>
-			<text/>
-				<text-sizing>
-					
-				</text-sizing>
+			<text>
 				<datasource>
-					<static-text value=""/>
+					<static-text value="first"/>
 				</datasource>
 			</text>
 		</label>

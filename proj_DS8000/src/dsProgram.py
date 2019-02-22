@@ -7,16 +7,24 @@ from PyQt5  import QtCore, QtGui, uic, QtWidgets
 from asyncio.tasks import wait
 from fileinput import filename
 from distutils.command.upload import upload
+from PyQt5.QtWidgets import QFileDialog
 
+
+#initialization necessities
 currDir  = os.getcwd()
-
-for bplText in open(currDir + '\\BPL.xml', 'r'):
-    if "insert_directory_here" in bplText:
-        bplText=bplText.replace("insert_directory_here" , currDir + '/BPL.xsd')
-        bplText=bplText.replace('\\','/')
-        print(bplText)
 os.system(currDir + "\\pythonInstall.cmd")
 
+class BPLPrinter:
+    def __init__(self, excDat):
+        self.excDat= excDat
+    
+    def changeBPLDirectory(self):
+        for bplText in open(currDir + '\\BPL.xml', 'r'):
+            if "insert_directory_here" in bplText:
+                bplText=bplText.replace("insert_directory_here" , currDir + '/BPL.xsd')
+                bplText=bplText.replace('\\','/')
+                print(bplText)
+                        
 class ExcelData:
     def __init__(self, excDat):
         self.excDat= excDat
@@ -25,15 +33,34 @@ class ExcelData:
 
         os.system(currDir  + '\\excelDS8000.xlsm')
         self.openSheet()
-        print('range: ' + self.labelRange['B7'].value)
+        print('range: ' + self.labelRange['B20'].value)
     
     def openSheet(self):
         
         self.excelSheet = op.Workbook()
         self.excelSheet = load_workbook(filename = currDir  + '\\excelDS8000.xlsm')
         self.labelRange = self.excelSheet['Sheet1']
-        
-        
+    
+    def loadSheet(self,fileLocation):
+        self.excelSheet = op.Workbook()
+        self.excelSheet = load_workbook(filename = fileLocation)
+        self.labelRange = self.excelSheet['Sheet1']
+        try:
+            self.gatherLabels(self.labelRange)
+        except Exception as e:
+            import os
+            print("GUI Crashed: %s\n" % e)          
+    
+    def gatherLabels(self,labelImport):
+        x = "7"
+        label = labelImport["B"+ x]
+        while label  != "":
+            currLabel = "B" + x
+            print(self.labelRange[currLabel].value)
+            x = int(x)
+            x+=1
+            x = str(x)
+            
 class NetworkAdapter:
     def __init__(self, gui):
         self.gui =  gui 
@@ -43,7 +70,10 @@ class NetworkAdapter:
         #os.system(".\netSet.cmd")
         self.gui.resetNetAdaptButton.setEnabled(True)
         self.gui.setIPAdaptButton.setEnabled(False)
-        #os.system( currDir + "\\netSet.cmd >>netsetOutput.txt")
+        self.gui.skipNetButton.setEnabled(False)
+        self.gui.newExcelButton.setEnabled(True)
+        self.gui.uploadExcelButton.setEnabled(True)
+        #os.system( currDir + "\\netSet.cmd >> netsetOutput.txt")
         os.system( currDir + "\\ipSet.cmd >> ipsetOutput.txt")
         
         '''
@@ -54,9 +84,7 @@ class NetworkAdapter:
         os.system("netsh int set int ECHO %netName% enable")
         #os.system("netsh int set int \"Ethernet\" enable")
         '''
-        #except:
-        #   print("Already Enabled")
- 
+        
     def resetNetAdapter(self):
         self.gui.resetNetAdaptButton.setEnabled(False)
         self.gui.setIPAdaptButton.setEnabled(True)
@@ -93,23 +121,27 @@ class GUIMainWindow(QtWidgets.QMainWindow):
         
     def startConfig(self):
         self.networkAdapt.setNetAdapter()
-        self.fillOutput()
+        self.fillOutput("\\ipsetOutput.txt")
     def resetConfig(self):
         self.networkAdapt.resetNetAdapter()
-        
+        self.fillOutput("\\resetNet.txt")
     def skipConfig(self):
         self.networkAdapt.skipNetSet()
         
     def newExcel(self):
         self.excDat.createExcel()
         
-    def fillOutput(self):
-        outputFile = open(currDir + "\\ipsetOutput.txt")
+    def fillOutput(self, fileName):
+        outputFile = open(currDir + fileName)
         setLines = outputFile.readlines()
         outputFile.close()
-        for line in setLines:
-            self.consoleOutput.setText(line)
-    
+        try:
+            for line in setLines:
+                self.consoleOutput.append(line)
+        except Exception as e:  
+            import os
+            print("GUI Crashed: %s\n" % e)
+        
     def openUpload(self):
         try:
             self.upload= UploadWindow(self)
@@ -126,13 +158,27 @@ class UploadWindow(QtWidgets.QDialog):
         super(UploadWindow,self).__init__(parent)
         self.gui = self
         
+        self.excDat = ExcelData(self)
         uic.loadUi(currDir + '\\uploadWindow.ui', self)
         
-        
-        
+          
     def openBrowse(self):
         self.browseWindow = QtWidgets.QFileDialog
-        self.browseWindow.setVisible(True)
+        self.browseDirectory = self.browseWindow.getOpenFileName()
+        self.showDirectory()
+        #print(self.browseDirectory[0])
+        
+    def showDirectory(self):
+        try:
+            self.directoryOutput.setText(self.browseDirectory[0])
+        except Exception as e:  
+            import os
+            print("GUI Crashed: %s\n" % e)
+        
+        
+    def uploadData(self):
+        
+        self.excDat.loadSheet(self.browseDirectory[0])
         
 def main():
     try:

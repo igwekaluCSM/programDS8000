@@ -1,0 +1,11 @@
+1)Right Click "Local Area Connection" or Ethernet
+
+2)Click "Properties"
+
+3)Click "Internet Protocol Version 4 (TCP/IPv4)
+
+4)Click "Properties"
+
+5)Select "Obtain an IP address automatically"
+
+6)Click "OK" and close all Windows

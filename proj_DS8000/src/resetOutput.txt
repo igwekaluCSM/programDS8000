@@ -144,3 +144,316 @@ Right Click 'Local Area Connection' and select 'Properties
 Press any key to continue . . . 
 Select 'Obtain an IP Address automatically' and click OK
 Close the windows...
+Reseting Global, OK!
+Reseting Interface, OK!
+Reseting Unicast Address, OK!
+Restart the computer to complete this action.
+Element not found.
+
+The object already exists.
+
+The object already exists.
+
+There's no user specified settings to be reset.
+The following command was not found: reset.
+
+Reset of all TCP parameters OK!
+The following command was not found: reset.
+
+
+Windows IP Configuration
+
+No operation can be performed on Wireless Network Connection 3 while it has its media disconnected.
+No operation can be performed on Wireless Network Connection 2 while it has its media disconnected.
+An error occurred while releasing interface Loopback Pseudo-Interface 1 : The system cannot find the file specified.
+
+
+Wireless LAN adapter Wireless Network Connection 3:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Wireless LAN adapter Wireless Network Connection 2:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Wireless LAN adapter Wireless Network Connection:
+
+   Connection-specific DNS Suffix  . : csm.local
+   Link-local IPv6 Address . . . . . : fe80::c1c1:159f:86c4:a532%15
+   IPv4 Address. . . . . . . . . . . : 192.168.88.68
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.88.1
+
+Ethernet adapter Local Area Connection:
+
+   Connection-specific DNS Suffix  . : 
+   IPv4 Address. . . . . . . . . . . : 192.168.100.2
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   IPv4 Address. . . . . . . . . . . : 192.168.101.2
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 
+
+Tunnel adapter isatap.csm.local:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : csm.local
+
+Tunnel adapter isatap.{9CECBEFB-D2A5-4645-9456-56C7BD3F601E}:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter Local Area Connection* 16:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter isatap.{7E2CCF89-E6B4-4A44-AA54-8FF2B81A6628}:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter isatap.{CB3491D2-1EB4-4E96-BBBF-AF77E043CE71}:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter Teredo Tunneling Pseudo-Interface:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+Right Click 'Local Area Connection' and select 'Properties
+In the list select 'Internet Protocol Version 4 (TCP/IPv4) and click 'Properties' 
+Select 'Obtain an IP Address automatically' and click OK
+Close the windows...
+Reseting Global, OK!
+Reseting Interface, OK!
+Reseting Unicast Address, OK!
+Restart the computer to complete this action.
+There's no user specified settings to be reset.
+The following command was not found: reset.
+
+Reset of all TCP parameters OK!
+The following command was not found: reset.
+
+
+Windows IP Configuration
+
+No operation can be performed on Wireless Network Connection 3 while it has its media disconnected.
+No operation can be performed on Wireless Network Connection 2 while it has its media disconnected.
+An error occurred while releasing interface Loopback Pseudo-Interface 1 : The system cannot find the file specified.
+
+
+Wireless LAN adapter Wireless Network Connection 3:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Wireless LAN adapter Wireless Network Connection 2:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Wireless LAN adapter Wireless Network Connection:
+
+   Connection-specific DNS Suffix  . : csm.local
+   Link-local IPv6 Address . . . . . : fe80::c1c1:159f:86c4:a532%15
+   IPv4 Address. . . . . . . . . . . : 192.168.88.68
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.88.1
+
+Ethernet adapter Local Area Connection:
+
+   Connection-specific DNS Suffix  . : 
+   IPv4 Address. . . . . . . . . . . : 192.168.100.2
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   IPv4 Address. . . . . . . . . . . : 192.168.101.2
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 
+
+Tunnel adapter isatap.csm.local:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : csm.local
+
+Tunnel adapter isatap.{9CECBEFB-D2A5-4645-9456-56C7BD3F601E}:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter Local Area Connection* 16:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter isatap.{7E2CCF89-E6B4-4A44-AA54-8FF2B81A6628}:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter Teredo Tunneling Pseudo-Interface:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+Right Click 'Local Area Connection' and select 'Properties
+In the list select 'Internet Protocol Version 4 (TCP/IPv4) and click 'Properties' 
+Select 'Obtain an IP Address automatically' and click OK
+Close the windows...
+Reseting Global, OK!
+Reseting Interface, OK!
+Reseting Unicast Address, OK!
+Restart the computer to complete this action.
+There's no user specified settings to be reset.
+The following command was not found: reset.
+
+Reset of all TCP parameters OK!
+The following command was not found: reset.
+
+
+Windows IP Configuration
+
+No operation can be performed on Wireless Network Connection 3 while it has its media disconnected.
+No operation can be performed on Wireless Network Connection 2 while it has its media disconnected.
+An error occurred while releasing interface Loopback Pseudo-Interface 1 : The system cannot find the file specified.
+
+
+Wireless LAN adapter Wireless Network Connection 3:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Wireless LAN adapter Wireless Network Connection 2:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Wireless LAN adapter Wireless Network Connection:
+
+   Connection-specific DNS Suffix  . : csm.local
+   Link-local IPv6 Address . . . . . : fe80::c1c1:159f:86c4:a532%15
+   IPv4 Address. . . . . . . . . . . : 192.168.88.68
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.88.1
+
+Ethernet adapter Local Area Connection:
+
+   Connection-specific DNS Suffix  . : 
+   IPv4 Address. . . . . . . . . . . : 192.168.100.2
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   IPv4 Address. . . . . . . . . . . : 192.168.101.2
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 
+
+Tunnel adapter isatap.csm.local:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : csm.local
+
+Tunnel adapter isatap.{9CECBEFB-D2A5-4645-9456-56C7BD3F601E}:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter Local Area Connection* 16:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter isatap.{7E2CCF89-E6B4-4A44-AA54-8FF2B81A6628}:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter isatap.{CB3491D2-1EB4-4E96-BBBF-AF77E043CE71}:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter Teredo Tunneling Pseudo-Interface:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+Right Click 'Local Area Connection' and select 'Properties
+In the list select 'Internet Protocol Version 4 (TCP/IPv4) and click 'Properties' 
+Select 'Obtain an IP Address automatically' and click OK
+Close the windows...
+Reseting Global, OK!
+Reseting Interface, OK!
+Reseting Unicast Address, OK!
+Restart the computer to complete this action.
+There's no user specified settings to be reset.
+The following command was not found: reset.
+
+Reset of all TCP parameters OK!
+The following command was not found: reset.
+
+
+Windows IP Configuration
+
+No operation can be performed on Wireless Network Connection 3 while it has its media disconnected.
+No operation can be performed on Wireless Network Connection 2 while it has its media disconnected.
+An error occurred while releasing interface Loopback Pseudo-Interface 1 : The system cannot find the file specified.
+
+
+Wireless LAN adapter Wireless Network Connection 3:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Wireless LAN adapter Wireless Network Connection 2:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Wireless LAN adapter Wireless Network Connection:
+
+   Connection-specific DNS Suffix  . : csm.local
+   Link-local IPv6 Address . . . . . : fe80::c1c1:159f:86c4:a532%15
+   IPv4 Address. . . . . . . . . . . : 192.168.88.68
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.88.1
+
+Ethernet adapter Local Area Connection:
+
+   Connection-specific DNS Suffix  . : 
+   IPv4 Address. . . . . . . . . . . : 192.168.100.2
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   IPv4 Address. . . . . . . . . . . : 192.168.101.2
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 
+
+Tunnel adapter isatap.csm.local:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : csm.local
+
+Tunnel adapter isatap.{9CECBEFB-D2A5-4645-9456-56C7BD3F601E}:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter Local Area Connection* 16:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter isatap.{7E2CCF89-E6B4-4A44-AA54-8FF2B81A6628}:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter isatap.{CB3491D2-1EB4-4E96-BBBF-AF77E043CE71}:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Tunnel adapter Teredo Tunneling Pseudo-Interface:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+Right Click 'Local Area Connection' and select 'Properties
+In the list select 'Internet Protocol Version 4 (TCP/IPv4) and click 'Properties' 
+Select 'Obtain an IP Address automatically' and click OK
+Close the windows...

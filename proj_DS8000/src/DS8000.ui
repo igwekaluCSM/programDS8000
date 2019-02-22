@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>591</width>
+    <width>604</width>
     <height>381</height>
    </rect>
   </property>
@@ -168,7 +168,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>591</width>
+     <width>604</width>
      <height>26</height>
     </rect>
    </property>
@@ -238,22 +238,6 @@
     <hint type="destinationlabel">
      <x>456</x>
      <y>208</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>consoleOutput</sender>
-   <signal>textChanged()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>fillOutput()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>366</x>
-     <y>58</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>465</x>
-     <y>50</y>
     </hint>
    </hints>
   </connection>

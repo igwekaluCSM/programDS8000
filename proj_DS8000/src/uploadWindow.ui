@@ -35,7 +35,7 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QTextEdit" name="textEdit">
+  <widget class="QTextEdit" name="directoryOutput">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -43,6 +43,9 @@
      <width>351</width>
      <height>87</height>
     </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QPushButton" name="browseButton">
@@ -64,6 +67,22 @@
  </widget>
  <resources/>
  <connections>
+  <connection>
+   <sender>browseButton</sender>
+   <signal>clicked()</signal>
+   <receiver>uploadWindow</receiver>
+   <slot>openBrowse()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>163</x>
+     <y>120</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>43</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
@@ -97,23 +116,25 @@
    </hints>
   </connection>
   <connection>
-   <sender>browseButton</sender>
-   <signal>clicked()</signal>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
    <receiver>uploadWindow</receiver>
-   <slot>openBrowse()</slot>
+   <slot>uploadData()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>163</x>
-     <y>120</y>
+     <x>102</x>
+     <y>154</y>
     </hint>
     <hint type="destinationlabel">
-     <x>43</x>
-     <y>118</y>
+     <x>30</x>
+     <y>144</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
   <slot>openBrowse()</slot>
+  <slot>uploadData()</slot>
+  <slot>showDirectory()</slot>
  </slots>
 </ui>

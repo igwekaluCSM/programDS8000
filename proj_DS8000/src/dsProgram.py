@@ -2,6 +2,8 @@ import sys
 import os
 import time as t
 import openpyxl as op
+import atexit
+
 from openpyxl import load_workbook  
 from PyQt5  import QtCore, QtGui, uic, QtWidgets
 from asyncio.tasks import wait
@@ -33,13 +35,18 @@ class ExcelData:
 
         os.system(currDir  + '\\excelDS8000.xlsm')
         self.openSheet()
-        print('range: ' + self.labelRange['B20'].value)
+        
     
     def openSheet(self):
-        
+        self.newSheet = currDir  + '\\excelDS8000.xlsm'
         self.excelSheet = op.Workbook()
-        self.excelSheet = load_workbook(filename = currDir  + '\\excelDS8000.xlsm')
+        self.excelSheet = load_workbook(filename = self.newSheet)
         self.labelRange = self.excelSheet['Sheet1']
+        try:
+            self.gatherLabels(self.labelRange)
+        except Exception as e:
+            print("GUI Crashed: %s\n" % e)          
+    
     
     def loadSheet(self,fileLocation):
         self.excelSheet = op.Workbook()
@@ -48,19 +55,49 @@ class ExcelData:
         try:
             self.gatherLabels(self.labelRange)
         except Exception as e:
-            import os
             print("GUI Crashed: %s\n" % e)          
     
     def gatherLabels(self,labelImport):
-        x = "7"
-        label = labelImport["B"+ x]
-        while label  != "":
-            currLabel = "B" + x
-            print(self.labelRange[currLabel].value)
-            x = int(x)
-            x+=1
-            x = str(x)
+        currSheet = "Sheet1"
+        self.labelNumber = "7"
+        sheetNumber = "1"
+        initialLabel = labelImport["B7"].value
+        label = labelImport["B"+ self.labelNumber].value
+
+        try:
+            os.remove("labelCollect.txt")
+            labelFile = open("labelCollect.txt",'a')
+        except WindowsError:
+            labelFile = open("labelCollect.txt",'a')
+             
+        if ((sheetNumber == "Sheet1") and (label == "")):
+            labelFile.write("There are no Labels!...Check Programming Sheet")
             
+        else:
+            while (initialLabel != ""):
+                self.iterateLabel(label,labelFile,labelImport)
+                self.iterateSheet()
+            
+            labelFile.close()
+            
+    def iterateLabel(self,label,labelFile,labelImport):
+        while(label !=""): 
+            labelFile.write(label)
+            self.labelNumber = int(self.labelNumber)
+            self.labelNumber+=1
+            self.labelNumber = str(self.labelNumber)
+            currLabel = "B" + self.labelNumber
+            label = labelImport[currLabel].value
+            
+    def iterateSheet(self):
+                        
+        sheetNumber = int(sheetNumber)
+        sheetNumber+=1
+        sheetNumber = str(sheetNumber)
+        currSheet = "Sheet" + sheetNumber
+        labelImport = self.excelSheet[currSheet]
+        label = labelImport["B"+ self.labelNumber].value
+                
 class NetworkAdapter:
     def __init__(self, gui):
         self.gui =  gui 
@@ -139,7 +176,6 @@ class GUIMainWindow(QtWidgets.QMainWindow):
             for line in setLines:
                 self.consoleOutput.append(line)
         except Exception as e:  
-            import os
             print("GUI Crashed: %s\n" % e)
         
     def openUpload(self):
@@ -148,13 +184,23 @@ class GUIMainWindow(QtWidgets.QMainWindow):
             self.upload.show()
             
         except Exception as e:  
-            import os
             print("GUI Crashed: %s\n" % e)
-        
+            
+    def showLabels(self):
+        self.gui.fillOutput('\\labelCollect.txt')
+    
+    def uploadNewData(self):
+        self.excDat.loadSheet(self.excDat.newSheet)
+        try:
+            self.gui.showLabels()
+
+        except Exception as e:
+            print("GUI Crashed: %s\n" % e)
+
         
 class UploadWindow(QtWidgets.QDialog):
     
-    def __init__(self,parent=None):
+    def __init__(self,parent=GUIMainWindow):
         super(UploadWindow,self).__init__(parent)
         self.gui = self
         
@@ -164,7 +210,7 @@ class UploadWindow(QtWidgets.QDialog):
           
     def openBrowse(self):
         self.browseWindow = QtWidgets.QFileDialog
-        self.browseDirectory = self.browseWindow.getOpenFileName()
+        self.browseDirectory = self.browseWindow.getOpenFileName(self,"","","*.xls *.xlsb *.xlsm *.xlsx *.csv")
         self.showDirectory()
         #print(self.browseDirectory[0])
         
@@ -172,13 +218,18 @@ class UploadWindow(QtWidgets.QDialog):
         try:
             self.directoryOutput.setText(self.browseDirectory[0])
         except Exception as e:  
-            import os
             print("GUI Crashed: %s\n" % e)
         
         
     def uploadData(self):
-        
         self.excDat.loadSheet(self.browseDirectory[0])
+        try:
+            self.parent().showLabels()
+
+        except Exception as e:
+            print("GUI Crashed: %s\n" % e)
+
+        
         
 def main():
     try:
@@ -187,7 +238,6 @@ def main():
         window.show()
         sys.exit(app.exec())
     except Exception as e:
-        import os
         print("GUI Crashed: %s\n" % e)
         
 # end of class MyApp

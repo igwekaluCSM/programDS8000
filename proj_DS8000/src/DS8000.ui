@@ -110,6 +110,9 @@
       <height>261</height>
      </rect>
     </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QGroupBox" name="excelBox">
     <property name="enabled">
@@ -273,6 +276,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>newExcelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>uploadNewData()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>560</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>591</x>
+     <y>238</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>enableConfig()</slot>
@@ -282,5 +301,6 @@
   <slot>skipConfig()</slot>
   <slot>newExcel()</slot>
   <slot>openUpload()</slot>
+  <slot>uploadNewData()</slot>
  </slots>
 </ui>

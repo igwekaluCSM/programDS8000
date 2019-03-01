@@ -3,6 +3,7 @@ import os
 import time as t
 import openpyxl as op
 import atexit
+import socket
 
 from openpyxl import load_workbook  
 from PyQt5  import QtCore, QtGui, uic, QtWidgets
@@ -28,7 +29,28 @@ class BPLPrinter:
                 bplText = bplText.replace('\\', '/')
                 print(bplText)
 
-                        
+
+class BradyIPPrinter:
+        global raw
+        
+        def __init__(self, gui):
+            self.gui = gui
+                
+        def startPrinter(self):
+            self.gui.connectButton.setEnabled(True)
+            
+        def connectPrinter(self):
+            self.gui.inputField.setEnabled(True)
+            self.gui.consoleOutput.append("Input the IP Address")
+            self.lastOutput = "Input the IP Address"
+            ipAddress = self.gui.inputField.text()
+            self.gui.consoleOutput.append(ipAddress) 
+        
+            
+        def inputData(self,text):
+            if(text == "Input the IP Address"):
+                self.connectPrinter()
+        
 class ExcelData:
 
     def __init__(self, excDat):
@@ -80,10 +102,10 @@ class ExcelData:
                 print("GUI Crashed: %s\n" % e)
                           
         self.labelFile.close()
+        
     def gatherLabels(self, labelImport,thisSheet):
         
         currSheet = thisSheet
-        print(currSheet)
         
         self.constLabelNum = "7"
         currColumn = "B"
@@ -91,7 +113,7 @@ class ExcelData:
         label = labelImport[currColumn + self.constLabelNum].value
 
         if (self.initialLabel == ""):
-            self.labelFile.write("There are no Labels in " + thisSheet + "!...Check Programming Sheet\n")  
+            self.labelFile.write("There are no Labels in " + currSheet + "!...Check Programming Sheet\n")  
         else:
                 
             self.iterateLabel(label, self.labelFile, currColumn, labelImport) 
@@ -176,6 +198,7 @@ class GUIMainWindow(QtWidgets.QMainWindow):
         
         self.networkAdapt = NetworkAdapter(self)
         self.excDat = ExcelData(self)
+        self.bradyPrint = BradyIPPrinter(self)
 
     def enableConfig(self):
         self.setIPAdaptButton.setEnabled(True)
@@ -216,7 +239,8 @@ class GUIMainWindow(QtWidgets.QMainWindow):
             
     def showLabels(self):
         self.gui.fillOutput('\\labelCollect.txt')
-    
+        self.bradyPrint.startPrinter()
+        
     def uploadNewData(self):
         self.excDat.loadSheet(self.excDat.newSheet)
         try:
@@ -224,8 +248,15 @@ class GUIMainWindow(QtWidgets.QMainWindow):
 
         except Exception as e:
             print("GUI Crashed: %s\n" % e)
-
+    ''        
+    def enterHit(self):
+        self.bradyPrint.inputData(self.lastOutput)    
         
+    def connectBrady(self):
+        self.bradyPrint.connectPrinter()
+
+
+   
 class UploadWindow(QtWidgets.QDialog):
     
     def __init__(self, parent=GUIMainWindow):

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>604</width>
-    <height>381</height>
+    <width>719</width>
+    <height>413</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -91,7 +91,10 @@
      </property>
     </widget>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="inputField">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -165,13 +168,80 @@
      </property>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="printerBox">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>60</y>
+      <width>111</width>
+      <height>141</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Label Printer</string>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+    <widget class="QPushButton" name="connectButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Connect</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="printAllButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Print All Labels</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="printSingleButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Print Label</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>604</width>
+     <width>719</width>
      <height>26</height>
     </rect>
    </property>
@@ -245,22 +315,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>newExcelButton</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>newExcel()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>480</x>
-     <y>294</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>452</x>
-     <y>287</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>uploadExcelButton</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
@@ -292,6 +346,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>inputField</sender>
+   <signal>returnPressed()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>enterHit()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>139</x>
+     <y>339</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>24</x>
+     <y>358</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>newExcelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>newExcel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>480</x>
+     <y>294</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>452</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>connectButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>connectBrady()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>676</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>693</x>
+     <y>52</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>enableConfig()</slot>
@@ -302,5 +404,8 @@
   <slot>newExcel()</slot>
   <slot>openUpload()</slot>
   <slot>uploadNewData()</slot>
+  <slot>startPrinter()</slot>
+  <slot>enterHit()</slot>
+  <slot>connectBrady()</slot>
  </slots>
 </ui>

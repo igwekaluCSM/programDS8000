@@ -43,14 +43,19 @@ class BradyIPPrinter:
             self.gui.inputField.setEnabled(True)
             self.gui.consoleOutput.append("Input the IP Address")
             self.lastOutput = "Input the IP Address"
-            ipAddress = self.gui.inputField.text()
-            self.gui.consoleOutput.append(ipAddress) 
         
-            
         def inputData(self,text):
-            if(text == "Input the IP Address"):
-                self.connectPrinter()
-        
+            if(text == "Input the IP Address"): 
+                ipAddress = self.gui.inputField.text()
+                self.gui.consoleOutput.append(ipAddress)
+                self.gui.connectButton.setEnabled(False)
+                self.gui.printAllButton.setEnabled(True)
+                self.gui.printSingleButton.setEnabled(True)
+                self.resetInput()
+
+        def resetInput(self):
+            self.gui.inputField.setText("")
+            self.gui.inputField.setEnabled(False)
 class ExcelData:
 
     def __init__(self, excDat):
@@ -218,6 +223,7 @@ class GUIMainWindow(QtWidgets.QMainWindow):
         
     def newExcel(self):
         self.excDat.createExcel()
+        self.uploadNewData()
         
     def fillOutput(self, fileName):
         outputFile = open(currDir + fileName)
@@ -250,7 +256,7 @@ class GUIMainWindow(QtWidgets.QMainWindow):
             print("GUI Crashed: %s\n" % e)
     ''        
     def enterHit(self):
-        self.bradyPrint.inputData(self.lastOutput)    
+        self.bradyPrint.inputData(self.bradyPrint.lastOutput)    
         
     def connectBrady(self):
         self.bradyPrint.connectPrinter()

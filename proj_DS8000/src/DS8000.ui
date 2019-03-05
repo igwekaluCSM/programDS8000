@@ -331,22 +331,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>newExcelButton</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>uploadNewData()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>560</x>
-     <y>285</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>591</x>
-     <y>238</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>inputField</sender>
    <signal>returnPressed()</signal>
    <receiver>MainWindow</receiver>
@@ -363,22 +347,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>newExcelButton</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>newExcel()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>480</x>
-     <y>294</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>452</x>
-     <y>287</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>connectButton</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
@@ -391,6 +359,22 @@
     <hint type="destinationlabel">
      <x>693</x>
      <y>52</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>newExcelButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>newExcel()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>484</x>
+     <y>292</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>452</x>
+     <y>273</y>
     </hint>
    </hints>
   </connection>

@@ -79,3 +79,30 @@ Examples:
       set interface name="Local Area Connection" newname="Connection 1"
 
 
+One or more essential parameters not specified
+The syntax supplied for this command is not valid. Check help for the correct syntax.
+
+Usage set interface [name = ] IfName                                      
+            [ [admin = ] ENABLED|DISABLED                         
+              [connect = ] CONNECTED|DISCONNECTED                 
+              [newname = ] NewName ]                              
+                                                                  
+      Sets interface parameters.                                  
+                                                                  
+      IfName  - the name of the interface                         
+      admin   - whether the interface should be enabled           
+      connect - whether to connect the interface (non-LAN only).  
+      newname - new name for the interface (LAN only).            
+                                                                  
+      Notes:                                                      
+      - At least one option other than the name must be specified.
+      - If connect = CONNECTED is specified, then the interface   
+        is automatically enabled even if the admin = DISABLED     
+        option is specified.                                      
+                                                                  
+Examples:                                                         
+                                                                  
+      set interface name="Local Area Connection" admin=DISABLED         
+      set interface name="Local Area Connection" newname="Connection 1"
+
+

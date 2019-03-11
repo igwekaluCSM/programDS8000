@@ -4,7 +4,11 @@ import time as t
 import openpyxl as op
 import atexit
 import socket
+import telnetlib as tn
 
+from socket import gethostbyname, gaierror
+from socket import gethostbyname, timeout
+from socket import error as socket_error
 from openpyxl import load_workbook  
 from PyQt5  import QtCore, QtGui, uic, QtWidgets
 from asyncio.tasks import wait
@@ -14,7 +18,8 @@ from PyQt5.QtWidgets import QFileDialog
 
 # initialization necessities
 currDir = os.getcwd()
-os.system(currDir + "\\pythonInstall.cmd")
+end = "\n"
+charReturn = "\r\n"
 
 
 class BPLPrinter:
@@ -31,7 +36,6 @@ class BPLPrinter:
 
 
 class BradyIPPrinter:
-        global raw
         
         def __init__(self, gui):
             self.gui = gui
@@ -41,21 +45,98 @@ class BradyIPPrinter:
             
         def connectPrinter(self):
             self.gui.inputField.setEnabled(True)
-            self.gui.consoleOutput.append("Input the IP Address")
-            self.lastOutput = "Input the IP Address"
+            self.gui.consoleOutput.append("Input the Printer IP Address: " + end)
+            self.lastOutput = "Input the Printer IP Address"
         
         def inputData(self,text):
-            if(text == "Input the IP Address"): 
+            if(text == "Input the Printer IP Address"): 
                 ipAddress = self.gui.inputField.text()
-                self.gui.consoleOutput.append(ipAddress)
+                self.gui.consoleOutput.append("Printer IP Address: " + ipAddress + end)
+                self.connectCheck(ipAddress)
                 self.gui.connectButton.setEnabled(False)
                 self.gui.printAllButton.setEnabled(True)
                 self.gui.printSingleButton.setEnabled(True)
-                self.resetInput()
-
+                self.gui.disconnectButton.setEnabled(True)
+            if(text == "Type the label you would like to Print: "):
+                self.singleLabel = self.gui.inputField.text()
+                self.printLabel(self.singleLabel) 
+            if(text == "Are you sure you want to print all labels? (Y/N): "):
+                self.allConfirm = self.gui.inputField.text()
+                if ((self.allConfirm[0] == 'Y') or (self.allConfirm == 'y')):
+                    try:
+                        self.allLabelPrint()
+                    except Exception as e:
+                        self.gui.consoleOutput.append("GUI Crashed: %s\n" % e)
+                else:
+                    self.gui.consoleOutput.append("Cancelled Print..."+ end)
+                    self.resetInput()
+                    
         def resetInput(self):
             self.gui.inputField.setText("")
             self.gui.inputField.setEnabled(False)
+            
+        def connectCheck(self,IP):
+            try:
+                global printConnect
+                self.printConnect= tn.Telnet(IP, port=9100, timeout=10)
+                
+            except gaierror:
+                self.gui.consoleOutput.append("Incorrect IP Address....Try Again" + end)
+                self.gui.printAllButton.setEnabled(False)
+                self.gui.printSingleButton.setEnabled(False)
+                self.connectPrinter()
+            except timeout:
+                self.gui.consoleOutput.append("Incorrect IP Address....Try Again" + end)
+                self.gui.printAllButton.setEnabled(False)
+                self.gui.printSingleButton.setEnabled(False)
+                self.connectPrinter()
+            except socket_error:
+                self.gui.consoleOutput.append("Incorrect IP Address....Try Again" + end)
+                self.gui.printAllButton.setEnabled(False)
+                self.gui.printSingleButton.setEnabled(False)
+                self.connectPrinter()
+            else:
+                self.gui.consoleOutput.append("Printer " +IP+ " Connected!" + end)
+                self.gui.consoleOutput.append("To Continue, Print Label(s)" + end)
+                self.resetInput()
+        
+        def singlePrint(self):
+            self.gui.inputField.setEnabled(True)
+            self.gui.consoleOutput.append("Type the label you would like to Print: " + end)
+            self.lastOutput = "Type the label you would like to Print: "
+            
+        def allPrint(self):
+            self.gui.inputField.setEnabled(True)
+            self.gui.consoleOutput.append("Are you sure you want to print all labels? (Y/N): " + end)
+            self.lastOutput = "Are you sure you want to print all labels? (Y/N): "
+                     
+        def printLabel(self,oneLabel):
+            for line in open(currDir + '\\labelCode.txt', 'r'):
+                if("insert label here" in line):
+                    line = line.replace("insert label here", oneLabel)
+                    print(line)
+                try:    
+                    self.printConnect.write((line).encode("ascii"))
+                except Exception as e:
+                    self.gui.consoleOutput.append("GUI Crashed: %s\n" % e)
+                else:
+                    self.resetInput()
+            self.gui.consoleOutput.append("Done Printing!" + end)
+            
+        def allLabelPrint(self):
+            for line in open(currDir + '\\labelCollect.txt', 'r'):
+                if("There are no Labels in" not in line):
+                    tempLabel = line
+                    for line in open(currDir + '\\labelCode.txt', 'r'):
+                        if("insert label here" in line):
+                            line = line.replace("insert label here", tempLabel)
+                        try:    
+                            self.printConnect.write((line).encode("ascii"))
+                        except Exception as e:
+                            self.gui.consoleOutput.append("GUI Crashed: %s\n" % e)
+            self.gui.consoleOutput.append("Done Printing!" + end)
+            self.resetInput()
+
 class ExcelData:
 
     def __init__(self, excDat):
@@ -118,7 +199,7 @@ class ExcelData:
         label = labelImport[currColumn + self.constLabelNum].value
 
         if (self.initialLabel == ""):
-            self.labelFile.write("There are no Labels in " + currSheet + "!...Check Programming Sheet\n")  
+            self.labelFile.write("There are no Labels in " + currSheet + "!...Check Programming Sheet" + end)  
         else:
                 
             self.iterateLabel(label, self.labelFile, currColumn, labelImport) 
@@ -157,15 +238,15 @@ class NetworkAdapter:
         
     def setNetAdapter(self):
         
-        # os.system(".\netSet.cmd")
         self.gui.resetNetAdaptButton.setEnabled(True)
         self.gui.setIPAdaptButton.setEnabled(False)
         self.gui.skipNetButton.setEnabled(False)
         self.gui.newExcelButton.setEnabled(True)
         self.gui.uploadExcelButton.setEnabled(True)
-        # os.system( currDir + "\\netSet.cmd >> netsetOutput.txt")
-        os.system(currDir + "\\ipSet.cmd >> ipsetOutput.txt")
-        
+        os.system( currDir + "\\netSet.cmd > netsetOutput.txt")
+        self.gui.fillOutput("\\netsetOutput.txt")
+        os.system(currDir + "\\ipSet.cmd > ipsetOutput.txt")
+        self.gui.fillOutput("\\ipsetOutput.txt")
         '''
         os.system("FOR /F \"tokens=4\" %G IN ('netsh int show int ^|find \"Local\"') DO SET netName=%G")
         os.system("FOR /F \"tokens=4\" %G IN ('netsh int show int ^|find \"Ethernet\"') DO echo Result is [%G]")
@@ -180,7 +261,8 @@ class NetworkAdapter:
         self.gui.setIPAdaptButton.setEnabled(True)
         
         # os.system("netsh int ip set address 13 dhcp")
-        os.system(currDir + "\\ipReset.cmd >> resetOutput.txt")
+        os.system(currDir + "\\ipReset.cmd > resetOutput.txt")
+        self.gui.fillOutput('\\resetOutput.txt')
         
     def skipNetSet(self):
         
@@ -190,6 +272,7 @@ class NetworkAdapter:
         self.gui.uploadExcelButton.setEnabled(True)
         self.gui.skipNetButton.setEnabled(False)
         
+            
         
 class GUIMainWindow(QtWidgets.QMainWindow):
     
@@ -204,11 +287,17 @@ class GUIMainWindow(QtWidgets.QMainWindow):
         self.networkAdapt = NetworkAdapter(self)
         self.excDat = ExcelData(self)
         self.bradyPrint = BradyIPPrinter(self)
-
+        
+        self.gui.consoleOutput.append("Pressing \"Start\" will install necessary components for this tool.." + end)
+        
     def enableConfig(self):
         self.setIPAdaptButton.setEnabled(True)
         self.startButton.setEnabled(False)
         self.skipNetButton.setEnabled(True)
+        self.gui.consoleOutput.append("Installing Necessary Python Components: " + end)
+        os.system(currDir + "\\pythonInstall.cmd > installOutput.txt")
+        self.fillOutput("\\installOutput.txt")
+
         
     def startConfig(self):
         self.networkAdapt.setNetAdapter()
@@ -256,13 +345,33 @@ class GUIMainWindow(QtWidgets.QMainWindow):
             print("GUI Crashed: %s\n" % e)
     ''        
     def enterHit(self):
-        self.bradyPrint.inputData(self.bradyPrint.lastOutput)    
+        if(self.gui.inputField.text() == ""):
+            self.gui.consoleOutput.append("Answer Cannot Be Blank!...Try Again" + end)
+        else: 
+            self.bradyPrint.inputData(self.bradyPrint.lastOutput)    
         
     def connectBrady(self):
         self.bradyPrint.connectPrinter()
 
-
-   
+    def printSingle(self):
+        self.bradyPrint.singlePrint()
+        
+    def printAll(self):
+        self.bradyPrint.allPrint()
+        
+    def donePrinting(self):
+        try:
+            self.bradyPrint.printConnect.close()
+            
+        except Exception as e:  
+            print("GUI Crashed: %s\n" % e)  
+        self.bradyPrint.startPrinter()
+        self.gui.printAllButton.setEnabled(False)
+        self.gui.printSingleButton.setEnabled(False)
+        self.gui.disconnectButton.setEnabled(False)
+        self.bradyPrint.resetInput()
+        self.gui.consoleOutput.append("Printer Disconnected..."+ end)
+        
 class UploadWindow(QtWidgets.QDialog):
     
     def __init__(self, parent=GUIMainWindow):

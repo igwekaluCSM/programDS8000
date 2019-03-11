@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>719</width>
-    <height>413</height>
+    <height>388</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -175,9 +175,9 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>60</y>
+      <y>20</y>
       <width>111</width>
-      <height>141</height>
+      <height>181</height>
      </rect>
     </property>
     <property name="title">
@@ -232,6 +232,22 @@
      </property>
      <property name="text">
       <string>Print Label</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="disconnectButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>150</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Disconnect</string>
      </property>
     </widget>
    </widget>
@@ -354,7 +370,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>676</x>
-     <y>134</y>
+     <y>94</y>
     </hint>
     <hint type="destinationlabel">
      <x>693</x>
@@ -378,6 +394,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>printSingleButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>printSingle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>659</x>
+     <y>172</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>685</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>disconnectButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>donePrinting()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>616</x>
+     <y>210</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>615</x>
+     <y>277</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>printAllButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>printAll()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>639</x>
+     <y>128</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>635</x>
+     <y>265</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>enableConfig()</slot>
@@ -391,5 +455,8 @@
   <slot>startPrinter()</slot>
   <slot>enterHit()</slot>
   <slot>connectBrady()</slot>
+  <slot>printSingle()</slot>
+  <slot>donePrinting()</slot>
+  <slot>printAll()</slot>
  </slots>
 </ui>

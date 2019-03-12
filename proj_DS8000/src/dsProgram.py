@@ -15,6 +15,7 @@ from asyncio.tasks import wait
 from fileinput import filename
 from distutils.command.upload import upload
 from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtCore import QThread, pyqtSignal
 
 # initialization necessities
 currDir = os.getcwd()
@@ -114,7 +115,6 @@ class BradyIPPrinter:
             for line in open(currDir + '\\labelCode.txt', 'r'):
                 if("insert label here" in line):
                     line = line.replace("insert label here", oneLabel)
-                    print(line)
                 try:    
                     self.printConnect.write((line).encode("ascii"))
                 except Exception as e:
@@ -287,8 +287,16 @@ class GUIMainWindow(QtWidgets.QMainWindow):
         self.networkAdapt = NetworkAdapter(self)
         self.excDat = ExcelData(self)
         self.bradyPrint = BradyIPPrinter(self)
+        self.gui.consoleOutput.append("Pressing \"Start\" will install necessary components for this tool.." + end)  
         
-        self.gui.consoleOutput.append("Pressing \"Start\" will install necessary components for this tool.." + end)
+    '''        
+        self.progressClass = ProgressThread(self)
+        self.progressClass.statusChange.connect(self.updateLoad)
+        
+    def updateLoad(self,value):
+        self.progressBar.setValue(value)
+       
+    '''
         
     def enableConfig(self):
         self.setIPAdaptButton.setEnabled(True)
@@ -297,11 +305,11 @@ class GUIMainWindow(QtWidgets.QMainWindow):
         self.gui.consoleOutput.append("Installing Necessary Python Components: " + end)
         os.system(currDir + "\\pythonInstall.cmd > installOutput.txt")
         self.fillOutput("\\installOutput.txt")
+        
 
         
     def startConfig(self):
         self.networkAdapt.setNetAdapter()
-        self.fillOutput("\\ipsetOutput.txt")
 
     def resetConfig(self):
         self.networkAdapt.resetNetAdapter()
@@ -333,6 +341,7 @@ class GUIMainWindow(QtWidgets.QMainWindow):
             print("GUI Crashed: %s\n" % e)
             
     def showLabels(self):
+        self.gui.consoleOutput.append("Labels Found: " + end)
         self.gui.fillOutput('\\labelCollect.txt')
         self.bradyPrint.startPrinter()
         
@@ -343,7 +352,7 @@ class GUIMainWindow(QtWidgets.QMainWindow):
 
         except Exception as e:
             print("GUI Crashed: %s\n" % e)
-    ''        
+        
     def enterHit(self):
         if(self.gui.inputField.text() == ""):
             self.gui.consoleOutput.append("Answer Cannot Be Blank!...Try Again" + end)
@@ -371,7 +380,19 @@ class GUIMainWindow(QtWidgets.QMainWindow):
         self.gui.disconnectButton.setEnabled(False)
         self.bradyPrint.resetInput()
         self.gui.consoleOutput.append("Printer Disconnected..."+ end)
+
+'''   
+class ProgressThread(QtCore.QThread):
+    
+    statusChange = pyqtSignal(int)
         
+    def run(self):
+        loading = 0
+        while loading < 100:
+            loading += 0.00001
+            self.statusChange.emit(loading)
+'''
+                    
 class UploadWindow(QtWidgets.QDialog):
     
     def __init__(self, parent=GUIMainWindow):

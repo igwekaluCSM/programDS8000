@@ -243,8 +243,11 @@ class NetworkAdapter:
         self.gui.skipNetButton.setEnabled(False)
         self.gui.newExcelButton.setEnabled(True)
         self.gui.uploadExcelButton.setEnabled(True)
-        os.system( currDir + "\\netSet.cmd > netsetOutput.txt")
-        self.gui.fillOutput("\\netsetOutput.txt")
+        #os.system( currDir + "\\netSet.cmd")
+        #os.system( currDir + "\\tryThis.cmd > netsetOutput.txt")
+        #self.gui.fillOutput("\\netsetOutput.txt")
+        #os.system( currDir + "\\disableWiFi.cmd > disWiFiOutput.txt")
+        #self.gui.fillOutput("\\disWiFiOutput.txt")
         os.system(currDir + "\\ipSet.cmd > ipsetOutput.txt")
         self.gui.fillOutput("\\ipsetOutput.txt")
         '''
@@ -328,6 +331,8 @@ class GUIMainWindow(QtWidgets.QMainWindow):
         outputFile.close()
         try:
             for line in setLines:
+                if ("The filename, directory name, or volume label syntax is incorrect." in line):
+                    self.networkAdapt.setNetAdapter()
                 self.consoleOutput.append(line)
         except Exception as e:  
             print("GUI Crashed: %s\n" % e)

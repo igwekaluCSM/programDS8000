@@ -1,0 +1,8 @@
+
+SUCCESS: Specified value was saved.
+Network Adapter Name:  
+The parameter is incorrect.
+
+
+Wireless Network Cards Disabled 
+Wireless Adapters Disabled

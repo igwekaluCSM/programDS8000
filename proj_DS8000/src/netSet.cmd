@@ -3,18 +3,34 @@
 
 @ECHO OFF 
 
-GOTO firstSearch || GOTO secondSearch  
+GOTO :firstSearch || GOTO :secondSearch || GOTO :EOF1
 
-:firstSearch (
+:firstSearch
 	FOR /F "tokens=4*" %%N IN ('netsh int show int^| findstr "Local Ethernet"') DO (
-		SET netName= \"%%N %%O\" && ECHO Network Adapter Name: %netName% && netsh int set int %netName% admin=ENABLED
-		IF %ERRORLEVEL% EQU 0 ( ECHO Network Card Enabled) ELSE ( ECHO Couldn't Enable Network Adapter Card )
-	)
-)
-:secondSearch (
-	FOR /F "tokens=1,5*" %%P IN ('netsh int ipv4 show int ^| findstr "Local Ethernet"') DO (
-		SET idName=%%P &&  ECHO Network Adapter ID Number: %idName% && netsh int set int %idName% admin=ENABLED
-		IF %ERRORLEVEL% EQU 0 ( ECHO Network IPv4 Enabled ) ELSE ( ECHO Couldn't Enable Network IPv4 Card) 
+		setx /m netName '"%%N %%O"' & ECHO Network Adapter Name: %netName% & netsh int set int name=%netName% admin=ENABLED
+		IF %ERRORLEVEL% EQU 0 ( 
+			ECHO Network Card Enabled & GOTO :EOF2
+		) ELSE ( 
+			ECHO Couldn't Enable Network Adapter Card
 		)
-)
+	)
+::End
+	
+:secondSearch
+	FOR /F "tokens=1,5*" %%P IN ('netsh int ipv4 show int ^| findstr "Local Ethernet"') DO (
+		setx /m idName %%P & ECHO Network Adapter ID Number: %idName% & netsh int set int name=%idName% admin=ENABLED
+		IF %ERRORLEVEL% EQU 0 ( 
+			ECHO Network IPv4 Enabled & GOTO :EOF2
+		) ELSE ( 
+			ECHO Couldn't Enable Network IPv4 Card) 
+		)
+::End
+
+:EOF1
+	ECHO Could Not Enable Network Adapters....Manually Enable Ethernet Adapters.
+	GOTO EOF
+:EOF2
+	ECHO Network Adapters Enabled
+	GOTO EOF
+:EOF
 @ECHO ON
